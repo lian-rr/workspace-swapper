@@ -11,7 +11,7 @@ import (
 
 var verbose *bool
 var cpAll *bool
-var worskpace string
+var workspace *string
 
 var wspace = "C:/Users/lirodrig/Documents/test-env/dir/*"
 var backup = "C:/Users/lirodrig/Documents/test-env/back/"
@@ -20,6 +20,8 @@ var flist []string
 func main() {
 
 	parseFlags()
+
+	validateInputs()
 
 	files, err := filepath.Glob(wspace)
 
@@ -35,9 +37,17 @@ func main() {
 func parseFlags() {
 	verbose = flag.Bool("v", false, "Verbose mode.")
 	cpAll = flag.Bool("a", false, "Replace all files in the workspace.")
-	workspace = flag
+	workspace = flag.String("w", "", "Workspace directory. Required for the replace all option.")
 
 	flag.Parse()
+}
+
+func validateInputs() {
+	fmt.Printf(*workspace)
+
+	if *cpAll && *workspace == "" {
+		log.Fatal("Error. Workspace directory required when replacing all files.")
+	}
 }
 
 func copyFile(fpath string) {
